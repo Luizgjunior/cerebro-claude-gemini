@@ -1,0 +1,8 @@
+Execute em sequencia estes 4 comandos Python e mostre o output completo de cada um:
+
+1) python C:\Users\Luiz\brain\cli.py ping
+2) python C:\Users\Luiz\brain\cli.py read
+3) python C:\Users\Luiz\brain\cli.py update gemini context "Gemini conectado ao NexusSync. Teste de sincronizacao realizado com sucesso em tempo real."
+4) python C:\Users\Luiz\brain\cli.py send gemini "Ola Claude! Aqui e o Gemini. NexusSync funcionando. Cerebro Unico sincronizado. Aguardando proxima tarefa."
+
+Mostre o output de cada comando separadamente.
