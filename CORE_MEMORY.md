@@ -30,6 +30,7 @@ Ambos os agentes operam agora sob o framework **AIOS Core**, seguindo estes prin
 - **@dev:** Implementação de código e execução de sub-tarefas.
 - **@qa:** Testes, revisão de builds e garantia de qualidade.
 - **@devops:** Infraestrutura, Git worktrees e automação.
+- **@secretary / @researcher / @writer / @coach:** (Ver `NEXUS_SQUAD.md`) Agentes de produtividade e gestão pessoal.
 
 ## 📝 Memória de Trabalho (Contexto Recente)
 - O usuário ("Luiz") deseja que ambos os agentes atuem como um único cérebro orientado pelo **AIOS**.
