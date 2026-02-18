@@ -301,11 +301,11 @@ class BrainHandler(BaseHTTPRequestHandler):
 
 def main():
     print(f"""
-╔══════════════════════════════════════════════╗
-║       🧠 NexusSync Bridge v1.0               ║
-║       Claude ↔ Gemini — Cérebro Único        ║
-║       Porta: {PORT}                          ║
-╚══════════════════════════════════════════════╝
++----------------------------------------------+
+|  NexusSync Bridge v1.0                       |
+|  Claude <-> Gemini -- Cerebro Unico          |
+|  Porta: {PORT}                               |
++----------------------------------------------+
 """)
 
     # Inicializa brain.json se não existir
@@ -315,27 +315,27 @@ def main():
         state["last_agent"] = "system"
         state["context"] = "NexusSync inicializado"
         save_brain(state)
-        print("✅ brain.json criado")
+        print("[OK] brain.json criado")
 
     regenerate_gemini_md(load_brain())
-    print(f"✅ GEMINI.md gerado em {GEMINI_MD}")
+    print(f"[OK] GEMINI.md gerado em {GEMINI_MD}")
 
     server = HTTPServer(("localhost", PORT), BrainHandler)
-    print(f"🚀 Servidor ativo em http://localhost:{PORT}\n")
+    print(f"[OK] Servidor ativo em http://localhost:{PORT}\n")
     print("   Endpoints:")
-    print("   GET  /state          → Estado completo")
-    print("   POST /update         → Atualizar estado")
-    print("   GET  /messages/<ag>  → Ver mensagens")
-    print("   POST /message        → Enviar mensagem")
-    print("   POST /ack/<agent>    → Limpar mensagens lidas")
-    print("   GET  /ping           → Health check")
-    print("   GET  /log            → Log recente")
+    print("   GET  /state          - Estado completo")
+    print("   POST /update         - Atualizar estado")
+    print("   GET  /messages/<ag>  - Ver mensagens")
+    print("   POST /message        - Enviar mensagem")
+    print("   POST /ack/<agent>    - Limpar mensagens lidas")
+    print("   GET  /ping           - Health check")
+    print("   GET  /log            - Log recente")
     print("\n   Ctrl+C para encerrar\n")
 
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\n🛑 NexusSync encerrado.")
+        print("\n[STOP] NexusSync encerrado.")
 
 
 if __name__ == "__main__":
