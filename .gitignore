@@ -16,6 +16,10 @@
 !aios-dashboard/
 !docs/
 !brain/
+!dashboard/
+
+# Ignora venv do dashboard
+dashboard/.venv/
 
 # Ignore logs and runtime files in brain
 brain/server.log
