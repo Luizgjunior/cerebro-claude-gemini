@@ -13,4 +13,5 @@
 9.  **Fluxo ADE (Autonomous Development Engine):** Siga o ciclo: **Planejamento -> Story -> Implementação -> QA**.
 10. **CLI First:** Use o terminal como fonte primária de verdade e inteligência.
 11. **Idioma AIOS:** Toda a orquestração e logs de agentes devem ser em Português.
+12. **Nexus Sync (GitHub):** Após concluir qualquer mudança significativa em arquivos de configuração ou no projeto Nexus, execute: `git add .; git commit -m "sync: auto-update from Nexus Core"; git push;`.
 
