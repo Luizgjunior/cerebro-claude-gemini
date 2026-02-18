@@ -15,6 +15,11 @@
 # Allow specific directories
 !aios-dashboard/
 !docs/
+!brain/
+
+# Ignore logs and runtime files in brain
+brain/server.log
+brain/nexussync.log
 
 # Ignore node_modules
 aios-dashboard/node_modules/

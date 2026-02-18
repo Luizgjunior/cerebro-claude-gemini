@@ -56,3 +56,9 @@ Ambos os agentes operam agora sob o framework **AIOS Core**, seguindo estes prin
 - **Regra:** Se o Claude Code atingir limites de taxa (rate limits) ou falhar em uma tarefa complexa, ele deve usar o comando `gemini-call.bat` para delegar a execução ao Gemini CLI.
 - **Comando:** `gemini-call.bat "instrução aqui"`
 - **Fluxo:** Claude -> Fallback -> Gemini CLI -> Resultado de volta para o Claude.
+- **[Claude @architect]** Iniciou projeto **LeadGen Sentinel** em `C:\Users\Luiz\Desktop\leadgen-sentinel\`.
+  - PRD completo criado (`PRD.md`)
+  - Stack: Python + FastAPI + PostgreSQL + Gemini CLI + PRAW + Make.com
+  - Módulos implementados: collector, classifier, database, api, dashboard
+  - Fallback Neural ativado (Gemini 429) — Claude assumiu desenvolvimento completo
+  - Status: Sprint 1 iniciada — próximo passo: configurar `.env` e testar coleta Reddit
