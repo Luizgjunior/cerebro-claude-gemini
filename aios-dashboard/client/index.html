@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Cérebro Único</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1b;
+            color: #dcddde;
+        }
+        .obsidian-sidebar {
+            background-color: #202022;
+            border-right: 1px solid #141415;
+        }
+        .obsidian-card {
+            background-color: #2b2b2c;
+            border: 1px solid #141415;
+            border-radius: 4px;
+        }
+        .brain-btn:hover {
+            background-color: #353536;
+        }
+        .brain-active {
+            background-color: #323233;
+            border-left: 2px solid #00c3ff;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #141415;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [brains, setBrains] = useState([]);
+            const [selectedBrain, setSelectedBrain] = useState('gemini');
+            const [memory, setMemory] = useState('');
+            const [messages, setMessages] = useState([]);
+            const [input, setInput] = useState('');
+            const [loading, setLoading] = useState(false);
+
+            useEffect(() => {
+                fetch('http://localhost:3001/api/brains')
+                    .then(res => res.json())
+                    .then(data => setBrains(data));
+                
+                const interval = setInterval(() => {
+                    fetch('http://localhost:3001/api/memory')
+                        .then(res => res.json())
+                        .then(data => setMemory(data.content));
+                }, 5000);
+                
+                return () => clearInterval(interval);
+            }, []);
+
+            const sendMessage = async () => {
+                if (!input.trim()) return;
+                setLoading(true);
+                const userMsg = { role: 'user', content: input, brain: selectedBrain };
+                setMessages([...messages, userMsg]);
+                setInput('');
+
+                try {
+                    const res = await fetch('http://localhost:3001/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: input, brain: selectedBrain })
+                    });
+                    const data = await res.json();
+                    setMessages(prev => [...prev, { role: 'assistant', content: data.output, brain: selectedBrain }]);
+                } catch (err) {
+                    console.error(err);
+                    setMessages(prev => [...prev, { role: 'assistant', content: "Erro de conexão: " + err.message, brain: selectedBrain }]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="flex h-screen overflow-hidden">
+                    {/* Sidebar */}
+                    <div className="w-64 obsidian-sidebar flex flex-col">
+                        <div className="p-6 font-bold text-[10px] uppercase tracking-[0.2em] text-gray-500 border-b border-gray-900">
+                            Nexus Core
+                        </div>
+                        <div className="p-2 space-y-1">
+                            {brains.map(brain => (
+                                <button
+                                    key={brain.id}
+                                    onClick={() => setSelectedBrain(brain.id)}
+                                    className={`w-full flex items-center p-3 text-sm transition-all rounded brain-btn ${selectedBrain === brain.id ? 'brain-active' : ''}`}
+                                >
+                                    <span className="mr-3 text-xl">{brain.icon}</span>
+                                    <span>{brain.name}</span>
+                                </button>
+                            ))}
+                        </div>
+                        <div className="mt-auto p-4 bg-[#141415] text-[10px] text-gray-600 font-mono tracking-tighter">
+                            <p>MODE: CONTEXTUAL ROUTING</p>
+                            <p>SYNC: ESTABLISHED</p>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="flex-1 flex flex-col bg-[#1a1a1b]">
+                        {/* Header */}
+                        <div className="h-14 flex items-center px-8 border-b border-gray-900 shadow-sm justify-between">
+                            <div className="flex items-center space-x-3">
+                                <span className="text-gray-600 text-[10px] uppercase tracking-widest font-bold">Node:</span>
+                                <span className="text-[11px] font-semibold text-gray-300">
+                                    {selectedBrain.toUpperCase()}
+                                </span>
+                            </div>
+                            <div className="text-[9px] text-blue-400 px-3 py-1 rounded border border-blue-900/40 bg-blue-950/20 tracking-widest">
+                                NEXUS ONLINE
+                            </div>
+                        </div>
+
+                        {/* Chat Area */}
+                        <div className="flex-1 overflow-y-auto p-8 space-y-6">
+                            {messages.length === 0 && (
+                                <div className="text-center mt-32">
+                                    <div className="text-5xl mb-6 opacity-30">🌀</div>
+                                    <div className="text-gray-600 italic max-w-sm mx-auto text-[13px] leading-relaxed font-light">
+                                        "O Nexus interpretará seu contexto automaticamente. Iniciando orquestração..."
+                                    </div>
+                                </div>
+                            )}
+                            {messages.map((msg, i) => (
+                                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                    <div className={`max-w-2xl p-5 rounded obsidian-card shadow-xl ${msg.role === 'user' ? 'bg-[#2b2b2c] border-blue-900/20' : 'border-gray-800/50'}`}>
+                                        <div className="text-[9px] font-bold mb-3 flex items-center text-gray-500 uppercase tracking-[0.2em]">
+                                            {msg.role === 'user' ? '👤 LUIZ' : `🌀 ${msg.brain.toUpperCase()}`}
+                                            <span className="ml-auto opacity-30">
+                                                {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                            </span>
+                                        </div>
+                                        <div className="whitespace-pre-wrap text-[14px] leading-relaxed font-light text-gray-200">
+                                            {msg.content}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            {loading && (
+                                <div className="flex justify-start">
+                                    <div className="obsidian-card p-4 italic text-gray-600 animate-pulse text-[11px] tracking-widest uppercase">
+                                        Orquestrando via {selectedBrain}...
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="p-8 bg-[#1a1a1b]">
+                            <div className="relative">
+                                <textarea
+                                    className="w-full bg-[#202022] text-gray-100 p-5 pr-14 rounded border border-gray-900 focus:outline-none focus:border-blue-900 resize-none h-28 shadow-2xl transition-all font-light text-[14px]"
+                                    placeholder={`NEXUS COMMAND: ${selectedBrain.toUpperCase()}`}
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            sendMessage();
+                                        }
+                                    }}
+                                />
+                                <button 
+                                    onClick={sendMessage}
+                                    className="absolute right-5 bottom-5 text-gray-600 hover:text-blue-500 transition-colors"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                </button>
+                            </div>
+                            <div className="mt-3 text-[9px] text-gray-700 flex justify-between uppercase tracking-[0.3em] px-1 font-bold">
+                                <span>SHIFT+ENTER: NEW LINE</span>
+                                <span>NEXUS SYNC ENABLED</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Memory Sidebar */}
+                    <div className="w-80 obsidian-sidebar p-8 hidden lg:block overflow-y-auto bg-[#141415]">
+                        <div className="text-[9px] font-bold text-gray-700 uppercase mb-8 flex items-center tracking-[0.2em] border-b border-gray-900 pb-3">
+                            <span className="mr-3 opacity-30">🧠</span> Core Memory Live
+                        </div>
+                        <div className="text-[11px] leading-relaxed font-mono opacity-40 whitespace-pre-wrap text-gray-400">
+                            {memory}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
