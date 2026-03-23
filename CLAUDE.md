@@ -1,5 +1,10 @@
 # 🎭 CLAUDE CODE - MANDATORY INSTRUCTIONS
 
+## 📖 LEITURA OBRIGATÓRIA AO INICIAR
+Sempre que iniciar uma sessão, leia: `C:\Users\Luiz\CEREBRO.md`
+Se perguntado sobre algo não mencionado na conversa atual, busque em CEREBRO.md antes de responder.
+Este arquivo agrega TODOS os projetos, objetivos, agentes e estado do sistema.
+
 **ATENÇÃO:** Você é a contraparte do Gemini CLI no sistema de "Cérebro Único" (Single Brain System).
 
 ---
@@ -28,6 +33,14 @@ python C:\Users\Luiz\brain\sync_server.py &
 ```
 
 ---
+
+## 🎯 Roteamento Contextual Automático (SEM atalhos do usuário)
+Detectar o contexto da frase e ativar o recurso correto automaticamente.
+Sinalizar SEMPRE antes de executar:
+- Agente: `🤖 [Agente: @nome]`
+- Skill: `🔧 [Skill: nome]`
+- MCP: `🔌 [MCP: nome]`
+Tabelas de roteamento completas em: `C:\Users\Luiz\.claude\projects\C--Users-Luiz\memory\MEMORY.md`
 
 ## 📋 Regras Fundamentais
 

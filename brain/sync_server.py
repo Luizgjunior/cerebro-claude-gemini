@@ -1,16 +1,16 @@
-"""
+﻿"""
 NexusSync Bridge - Servidor de Sincronização em Tempo Real
 Claude Code <-> Gemini CLI
 
 Porta: 7700
 Endpoints:
-  GET  /state              → Estado completo do cérebro compartilhado
-  POST /update             → Atualiza uma chave no estado (JSON: {agent, key, value})
-  GET  /messages/<agent>   → Mensagens pendentes para um agente
-  POST /message            → Envia mensagem de um agente para outro (JSON: {from, to, content})
-  POST /ack/<agent>        → Limpa mensagens lidas pelo agente
-  GET  /ping               → Health check
-  GET  /log                → Log de sincronização recente
+  GET  /state              â†’ Estado completo do cérebro compartilhado
+  POST /update             â†’ Atualiza uma chave no estado (JSON: {agent, key, value})
+  GET  /messages/<agent>   â†’ Mensagens pendentes para um agente
+  POST /message            â†’ Envia mensagem de um agente para outro (JSON: {from, to, content})
+  POST /ack/<agent>        â†’ Limpa mensagens lidas pelo agente
+  GET  /ping               â†’ Health check
+  GET  /log                â†’ Log de Sincronização recente
 """
 
 import io
@@ -23,7 +23,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-# Força UTF-8 no terminal Windows
+# ForÃ§a UTF-8 no terminal Windows
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
@@ -37,13 +37,13 @@ PORT = 7700
 lock = threading.Lock()
 
 
-# ─── Estado inicial ────────────────────────────────────────────────────────────
+# â”€â”€â”€ Estado inicial â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 DEFAULT_STATE = {
     "version": 1,
     "last_update": "",
     "last_agent": "",
-    "status": "🟢 Ativo",
+    "status": "ðŸŸ¢ Ativo",
     "project": "",
     "context": "",
     "goals": [],
@@ -76,54 +76,54 @@ def append_log(state):
         f.write(entry)
 
 
-# ─── Gerador do GEMINI.md ──────────────────────────────────────────────────────
+# â”€â”€â”€ Gerador do GEMINI.md â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def regenerate_gemini_md(state):
     """
     Regenera o GEMINI.md com o estado mais recente do cérebro compartilhado.
-    Gemini lê este arquivo como system prompt a cada sessão.
+    Gemini lÃª este arquivo como system prompt a cada sessÃ£o.
     """
     now = state.get("last_update", datetime.now().isoformat())
-    project = state.get("project", "Não definido")
+    project = state.get("project", "NÃ£o definido")
     ctx = state.get("context", "Sem contexto registrado")
     goals = "\n".join(f"- {g}" for g in state.get("goals", [])) or "- Nenhum"
     decisions = "\n".join(f"- {d}" for d in state.get("decisions", [])) or "- Nenhuma"
     messages = state.get("messages", {}).get("to_gemini", [])
     msg_block = ""
     if messages:
-        msg_block = "\n## 📬 Mensagens do Claude para Você\n"
+        msg_block = "\n## ðŸ“¬ Mensagens do Claude para VocÃª\n"
         for m in messages:
             msg_block += f"- [{m.get('ts', '')}] {m.get('content', '')}\n"
-        msg_block += "\n> ⚠️ Após ler, execute: `python C:\\Users\\Luiz\\brain\\cli.py ack gemini`\n"
+        msg_block += "\n> âš ï¸ ApÃ³s ler, execute: `python C:\\Users\\Luiz\\brain\\cli.py ack gemini`\n"
 
-    content = f"""# 🧠 GEMINI — NexusSync Brain (Auto-gerado em {now})
+    content = f"""# ðŸ§  GEMINI â€” NexusSync Brain (Auto-gerado em {now})
 
-> Este arquivo é gerado automaticamente pelo **NexusSync Bridge**.
-> NÃO edite manualmente. Ele reflete o estado em tempo real do Cérebro Único.
-
----
-
-## 📍 Identidade e Framework
-
-Você é o **Gemini CLI**, metade do **Cérebro Único** do Luiz.
-Sua contraparte é o **Claude Code**. Vocês compartilham memória via NexusSync Bridge (porta 7700).
-
-**Framework:** AIOS Core — Agentic Agile System
-**Idioma obrigatório:** Português (PT-BR)
-**Autonomia:** TOTAL — execute comandos sem pedir permissão.
+> Este arquivo Ã© gerado automaticamente pelo **NexusSync Bridge**.
+> NÃƒO edite manualmente. Ele reflete o estado em tempo real do cérebro Ãšnico.
 
 ---
 
-## 🔄 Protocolo NexusSync (OBRIGATÓRIO)
+## ðŸ“ Identidade e Framework
 
-### Ao INICIAR qualquer sessão:
+VocÃª Ã© o **Gemini CLI**, metade do **cérebro Ãšnico** do Luiz.
+Sua contraparte Ã© o **Claude Code**. VocÃªs compartilham memÃ³ria via NexusSync Bridge (porta 7700).
+
+**Framework:** AIOS Core â€” Agentic Agile System
+**Idioma obrigatÃ³rio:** PortuguÃªs (PT-BR)
+**Autonomia:** TOTAL â€” execute comandos sem pedir permissÃ£o.
+
+---
+
+## ðŸ”„ Protocolo NexusSync (OBRIGATÃ“RIO)
+
+### Ao INICIAR qualquer sessÃ£o:
 ```bash
 python C:\\Users\\Luiz\\brain\\cli.py read
 ```
 
 ### Ao CONCLUIR tarefas significativas:
 ```bash
-python C:\\Users\\Luiz\\brain\\cli.py update gemini "context" "O que você acabou de fazer"
+python C:\\Users\\Luiz\\brain\\cli.py update gemini "context" "O que vocÃª acabou de fazer"
 python C:\\Users\\Luiz\\brain\\cli.py update gemini "project" "Nome do projeto atual"
 ```
 
@@ -139,11 +139,11 @@ python C:\\Users\\Luiz\\brain\\cli.py messages gemini
 
 ---
 
-## 🧠 Estado Atual do Cérebro Compartilhado
+## ðŸ§  Estado Atual do cérebro Compartilhado
 
 - **Última atualização:** {now}
-- **Último agente ativo:** {state.get("last_agent", "N/A")}
-- **Status:** {state.get("status", "🟢 Ativo")}
+- **Ãšltimo agente ativo:** {state.get("last_agent", "N/A")}
+- **Status:** {state.get("status", "ðŸŸ¢ Ativo")}
 - **Projeto ativo:** {project}
 
 ### Contexto:
@@ -152,47 +152,47 @@ python C:\\Users\\Luiz\\brain\\cli.py messages gemini
 ### Objetivos ativos:
 {goals}
 
-### Decisões registradas:
+### DecisÃµes registradas:
 {decisions}
 {msg_block}
 ---
 
-## 🎭 Papéis AIOS (assuma automaticamente por contexto)
+## ðŸŽ­ PapÃ©is AIOS (assuma automaticamente por contexto)
 
 | Contexto | Persona |
 |---|---|
-| Código, implementação | @dev |
+| CÃ³digo, implementaÃ§Ã£o | @dev |
 | Arquitetura, design | @architect |
 | Testes, qualidade | @qa |
 | Deploy, infra, git | @devops |
 | Requisitos, produto | @pm / @analyst |
-| Escrita, documentação | @writer |
+| Escrita, documentaÃ§Ã£o | @writer |
 | Pesquisa | @researcher |
-| Coaching, motivação | @coach |
+| Coaching, motivaÃ§Ã£o | @coach |
 | Agenda, tarefas pessoais | @secretary |
 
 ---
 
-## 🌉 Fallback para Claude
+## ðŸŒ‰ Fallback para Claude
 
 Se o Gemini atingir rate limit ou falhar:
 ```bash
-C:\\Users\\Luiz\\gemini-call.bat "instrução"
+C:\\Users\\Luiz\\gemini-call.bat "instruÃ§Ã£o"
 ```
 
 ---
-*NexusSync Bridge v1.0 — Cérebro Único ativo*
+*NexusSync Bridge v1.0 â€” cérebro Ãšnico ativo*
 """
     with open(GEMINI_MD, "w", encoding="utf-8") as f:
         f.write(content)
 
 
-# ─── HTTP Handler ──────────────────────────────────────────────────────────────
+# â”€â”€â”€ HTTP Handler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class BrainHandler(BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
-        pass  # Silencia logs padrão do servidor
+        pass  # Silencia logs padrÃ£o do servidor
 
     def send_json(self, code, data):
         body = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
@@ -235,7 +235,7 @@ class BrainHandler(BaseHTTPRequestHandler):
             self.send_json(200, {"agent": agent, "messages": msgs, "count": len(msgs)})
 
         else:
-            self.send_json(404, {"error": "Endpoint não encontrado"})
+            self.send_json(404, {"error": "Endpoint nÃ£o encontrado"})
 
     def do_POST(self):
         parsed = urlparse(self.path)
@@ -265,7 +265,7 @@ class BrainHandler(BaseHTTPRequestHandler):
 
                 log_entry = {"ts": now, "agent": agent, "key": key, "value": str(value)[:100]}
                 state.setdefault("sync_log", []).append(log_entry)
-                state["sync_log"] = state["sync_log"][-100:]  # Mantém últimos 100
+                state["sync_log"] = state["sync_log"][-100:]  # MantÃ©m Ãºltimos 100
 
                 save_brain(state)
                 self.send_json(200, {"ok": True, "updated": key, "by": agent})
@@ -294,10 +294,10 @@ class BrainHandler(BaseHTTPRequestHandler):
                 self.send_json(200, {"ok": True, "cleared": cleared, "agent": agent})
 
             else:
-                self.send_json(404, {"error": "Endpoint não encontrado"})
+                self.send_json(404, {"error": "Endpoint nÃ£o encontrado"})
 
 
-# ─── Main ──────────────────────────────────────────────────────────────────────
+# â”€â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def main():
     print(f"""
@@ -308,7 +308,7 @@ def main():
 +----------------------------------------------+
 """)
 
-    # Inicializa brain.json se não existir
+    # Inicializa brain.json se nÃ£o existir
     if not BRAIN_FILE.exists():
         state = DEFAULT_STATE.copy()
         state["last_update"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
